@@ -23,7 +23,7 @@ import PackageDescription
 
 let package = Package(
     dependencies: [
-        .Package(url: "https://github.com/GraphQLSwift/Graphiti.git", .upToNextMinor(from: "0.20.1")),
+        .Package(url: "https://github.com/GraphQLSwift/GraphQLRxSwift.git", .upToNextMinor(from: "0.0.1")),
     ]
 )
 ```
