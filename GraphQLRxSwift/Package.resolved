@@ -1,0 +1,52 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CRuntime",
+        "repositoryURL": "https://github.com/wickwirew/CRuntime.git",
+        "state": {
+          "branch": null,
+          "revision": "95f911318d8c885f6fc05e971471f94adfd39405",
+          "version": "2.1.2"
+        }
+      },
+      {
+        "package": "GraphQL",
+        "repositoryURL": "https://github.com/GraphQLSwift/GraphQL.git",
+        "state": {
+          "branch": null,
+          "revision": "21104b805ad7de5a223b0d78e0cf5d9d49465ac4",
+          "version": "1.1.8"
+        }
+      },
+      {
+        "package": "Runtime",
+        "repositoryURL": "https://github.com/wickwirew/Runtime.git",
+        "state": {
+          "branch": null,
+          "revision": "61c9776f47d2951bdc562486ad348e5e1ca2e180",
+          "version": "2.1.1"
+        }
+      },
+      {
+        "package": "RxSwift",
+        "repositoryURL": "https://github.com/ReactiveX/RxSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "7e01c05f25c025143073eaa3be3532f9375c614b",
+          "version": "6.1.0"
+        }
+      },
+      {
+        "package": "swift-nio",
+        "repositoryURL": "https://github.com/apple/swift-nio.git",
+        "state": {
+          "branch": null,
+          "revision": "6d3ca7e54e06a69d0f2612c2ce8bb8b7319085a4",
+          "version": "2.26.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
