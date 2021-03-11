@@ -40,7 +40,7 @@ func subscribeUser(context: HelloContext, arguments: NoArguments) -> EventStream
 
 Also provided is a `ObservableSourceEventStream` type alias that can be used to downcast the result of a subscribe execution.
 It is guaranteed that the stream returned by any subscription query whose resolver returns an `ObservableEventStream` will be a
-`ObservableSourceEventStream`. For example:
+`ObservableSubscriptionEventStream`. For example:
 
 ```
 let subscriptionResult = try graphQLApi.subscribe(
