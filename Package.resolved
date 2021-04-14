@@ -11,12 +11,21 @@
         }
       },
       {
+        "package": "Graphiti",
+        "repositoryURL": "https://github.com/GraphQLSwift/Graphiti.git",
+        "state": {
+          "branch": null,
+          "revision": "35cf75fd6506042e1132f308b0c446858dba85f0",
+          "version": "0.22.1"
+        }
+      },
+      {
         "package": "GraphQL",
         "repositoryURL": "https://github.com/GraphQLSwift/GraphQL.git",
         "state": {
           "branch": null,
-          "revision": "21104b805ad7de5a223b0d78e0cf5d9d49465ac4",
-          "version": "1.1.8"
+          "revision": "abf41c20c79331444ee3a290373d7c647c244383",
+          "version": "1.2.0"
         }
       },
       {
