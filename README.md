@@ -32,7 +32,7 @@ GraphQLRxSwift provides an `ObservableEventStream` wrapper class that can be use
 `EventStream` requirements. A convenience method `toEventStream` is added to all Observable instances.
 This class is used when defining subscription resolvers, as shown below:
 
-```
+```swift
 func subscribeUser(context: HelloContext, arguments: NoArguments) -> EventStream<Any> {
     PublishSubject<Any>().toEventStream()
 }
@@ -42,7 +42,7 @@ Also provided is a `ObservableSubscriptionEventStream` type alias that can be us
 It is guaranteed that the stream returned by any subscription query whose resolver returns an `ObservableEventStream` will be a
 `ObservableSubscriptionEventStream`. For example:
 
-```
+```swift
 let subscriptionResult = try graphQLApi.subscribe(
     request: request,
     context: api.context,
