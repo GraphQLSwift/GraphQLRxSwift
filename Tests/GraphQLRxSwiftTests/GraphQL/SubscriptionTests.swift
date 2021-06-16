@@ -56,13 +56,13 @@ class SubscriptionTests : XCTestCase {
         
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "inbox":[
-                    "total": 2,
-                    "unread": 1
-                ],
                 "email":[
-                    "subject": "Alright",
-                    "from": "yuzhi@graphql.org"
+                    "from": "yuzhi@graphql.org",
+                    "subject": "Alright"
+                ],
+                "inbox":[
+                    "unread": 1,
+                    "total": 2
                 ]
             ]]
         ))
@@ -150,13 +150,13 @@ class SubscriptionTests : XCTestCase {
         
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "inbox":[
-                    "total": 2,
-                    "unread": 1
-                ],
                 "email":[
-                    "subject": "Alright",
-                    "from": "yuzhi@graphql.org"
+                    "from": "yuzhi@graphql.org",
+                    "subject": "Alright"
+                ],
+                "inbox":[
+                    "unread": 1,
+                    "total": 2
                 ]
             ]]
         ))
@@ -410,13 +410,13 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "inbox":[
-                    "total": 2,
-                    "unread": 1
-                ],
                 "email":[
-                    "subject": "Alright",
-                    "from": "yuzhi@graphql.org"
+                    "from": "yuzhi@graphql.org",
+                    "subject": "Alright"
+                ],
+                "inbox":[
+                    "unread": 1,
+                    "total": 2
                 ]
             ]]
         ))
@@ -465,13 +465,13 @@ class SubscriptionTests : XCTestCase {
         
         let expected = GraphQLResult(
             data: ["importantEmail": [
-                "inbox":[
-                    "total": 2,
-                    "unread": 1
-                ],
                 "email":[
-                    "subject": "Alright",
-                    "from": "yuzhi@graphql.org"
+                    "from": "yuzhi@graphql.org",
+                    "subject": "Alright"
+                ],
+                "inbox":[
+                    "unread": 1,
+                    "total": 2
                 ]
             ]]
         )
@@ -516,13 +516,13 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "inbox":[
-                    "total": 2,
-                    "unread": 1
-                ],
                 "email":[
-                    "subject": "Alright",
-                    "from": "yuzhi@graphql.org"
+                    "from": "yuzhi@graphql.org",
+                    "subject": "Alright"
+                ],
+                "inbox":[
+                    "unread": 1,
+                    "total": 2
                 ]
             ]]
         ))
@@ -535,13 +535,13 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "inbox":[
-                    "total": 3,
-                    "unread": 2
-                ],
                 "email":[
-                    "subject": "Tools",
-                    "from": "hyo@graphql.org"
+                    "from": "hyo@graphql.org",
+                    "subject": "Tools"
+                ],
+                "inbox":[
+                    "unread": 2,
+                    "total": 3
                 ]
             ]]
         ))
@@ -584,13 +584,13 @@ class SubscriptionTests : XCTestCase {
         ))
         let firstMessageExpected = GraphQLResult(
             data: ["importantEmail": [
-                "inbox":[
-                    "total": 2,
-                    "unread": 1
-                ],
                 "email":[
-                    "subject": "Alright",
-                    "from": "yuzhi@graphql.org"
+                    "from": "yuzhi@graphql.org",
+                    "subject": "Alright"
+                ],
+                "inbox":[
+                    "unread": 1,
+                    "total": 2
                 ]
             ]]
         )
@@ -616,13 +616,13 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "inbox":[
-                    "total": 4,
-                    "unread": 3
-                ],
                 "email":[
-                    "subject": "Tools",
-                    "from": "hyo@graphql.org"
+                    "from": "hyo@graphql.org",
+                    "subject": "Tools"
+                ],
+                "inbox":[
+                    "unread": 3,
+                    "total": 4
                 ]
             ]]
         ))
@@ -657,14 +657,14 @@ class SubscriptionTests : XCTestCase {
         
         let expected = GraphQLResult(
             data: ["importantEmail": [
-                "inbox":[
-                    "total": 2,
-                    "unread": 1
-                ],
                 "email":[
-                    "subject": "Alright",
-                    "from": "yuzhi@graphql.org"
-                ]
+                    "from": "yuzhi@graphql.org",
+                    "subject": "Alright"
+                ],
+                "inbox":[
+                    "unread": 1,
+                    "total": 2
+                ],
             ]]
         )
         
