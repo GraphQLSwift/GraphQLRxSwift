@@ -213,8 +213,8 @@ class HelloWorldTests : XCTestCase {
 
         XCTAssertEqual(currentResult, GraphQLResult(data: [
             "subscribeUser": [
-                "name": "Jerry",
-                "id": "124"
+                "id": "124",
+                "name": "Jerry"
             ]
         ]))
     }
@@ -269,8 +269,8 @@ class HelloWorldTests : XCTestCase {
         XCTAssertEqual(currentResult, GraphQLResult(data: [
             "subscribeUserEvent": [
                 "user": [
-                    "name": "Jerry",
-                    "id": "124"
+                    "id": "124",
+                    "name": "Jerry"
                 ]
             ]
         ]))
