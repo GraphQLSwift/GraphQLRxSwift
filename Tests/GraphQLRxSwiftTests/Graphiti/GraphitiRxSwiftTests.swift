@@ -5,7 +5,7 @@ import NIO
 import RxSwift
 @testable import GraphQLRxSwift
 
-let pubsub = PublishSubject<Any>()
+let pubsub = PublishSubject<User>()
 
 struct ID : Codable {
     let id: String
@@ -100,7 +100,7 @@ struct HelloResolver {
         User(arguments.user)
     }
     
-    func subscribeUser(context: HelloContext, arguments: NoArguments) -> EventStream<Any> {
+    func subscribeUser(context: HelloContext, arguments: NoArguments) -> EventStream<User> {
         pubsub.toEventStream()
     }
 }
