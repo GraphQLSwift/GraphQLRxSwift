@@ -3,11 +3,11 @@
     "pins": [
       {
         "package": "Graphiti",
-        "repositoryURL": "https://github.com/NeedleInAJayStack/Graphiti.git",
+        "repositoryURL": "https://github.com/GraphQLSwift/Graphiti.git",
         "state": {
-          "branch": "fix/ScalarInput",
-          "revision": "f7d50d0d19702c3c26eda75237f937ff6869fba0",
-          "version": null
+          "branch": null,
+          "revision": "c9bc9d1cc9e62e71a824dc178630bfa8b8a6e2a4",
+          "version": "1.0.0"
         }
       },
       {
