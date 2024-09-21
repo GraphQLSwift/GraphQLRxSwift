@@ -4,14 +4,15 @@ import NIO
 import RxSwift
 
 // MARK: Types
-struct Email : Encodable {
-    let from:String
-    let subject:String
-    let message:String
-    let unread:Bool
-    let priority:Int
-    
-    init(from:String, subject:String, message:String, unread:Bool, priority:Int = 0) {
+
+struct Email: Encodable {
+    let from: String
+    let subject: String
+    let message: String
+    let unread: Bool
+    let priority: Int
+
+    init(from: String, subject: String, message: String, unread: Bool, priority: Int = 0) {
         self.from = from
         self.subject = subject
         self.message = message
@@ -20,16 +21,17 @@ struct Email : Encodable {
     }
 }
 
-struct Inbox : Encodable {
-    let emails:[Email]
+struct Inbox: Encodable {
+    let emails: [Email]
 }
 
-struct EmailEvent : Encodable {
-    let email:Email
-    let inbox:Inbox
+struct EmailEvent: Encodable {
+    let email: Email
+    let inbox: Inbox
 }
 
 // MARK: Schema
+
 let EmailType = try! GraphQLObjectType(
     name: "Email",
     fields: [
@@ -62,7 +64,7 @@ let InboxType = try! GraphQLObjectType(
         "unread": GraphQLField(
             type: GraphQLInt,
             resolve: { inbox, _, _, _ in
-                (inbox as! Inbox).emails.filter({$0.unread}).count
+                (inbox as! Inbox).emails.filter { $0.unread }.count
             }
         ),
     ]
@@ -75,7 +77,7 @@ let EmailEventType = try! GraphQLObjectType(
         ),
         "inbox": GraphQLField(
             type: InboxType
-        )
+        ),
     ]
 )
 let EmailQueryType = try! GraphQLObjectType(
@@ -83,7 +85,7 @@ let EmailQueryType = try! GraphQLObjectType(
     fields: [
         "inbox": GraphQLField(
             type: InboxType
-        )
+        ),
     ]
 )
 
@@ -95,7 +97,7 @@ class EmailDb {
     var emails: [Email]
     let publisher: PublishSubject<Any>
     let disposeBag: DisposeBag
-    
+
     init() {
         emails = [
             Email(
@@ -103,32 +105,32 @@ class EmailDb {
                 subject: "Hello",
                 message: "Hello World",
                 unread: false
-            )
+            ),
         ]
         publisher = PublishSubject<Any>()
         disposeBag = DisposeBag()
     }
-    
+
     /// Adds a new email to the database and triggers all observers
-    func trigger(email:Email) {
+    func trigger(email: Email) {
         emails.append(email)
         publisher.onNext(email)
     }
-    
+
     /// Returns the default email schema, with standard resolvers.
     func defaultSchema() -> GraphQLSchema {
         return emailSchemaWithResolvers(
-            resolve: {emailAny, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+            resolve: { emailAny, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
                 if let email = emailAny as? Email {
                     return eventLoopGroup.next().makeSucceededFuture(EmailEvent(
                         email: email,
                         inbox: Inbox(emails: self.emails)
                     ))
                 } else {
-                    throw GraphQLError(message: "\(type(of:emailAny)) is not Email")
+                    throw GraphQLError(message: "\(type(of: emailAny)) is not Email")
                 }
             },
-            subscribe: {_, args, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+            subscribe: { _, args, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
                 let priority = args["priority"].int ?? 0
                 let filtered = self.publisher.filter { emailAny throws in
                     if let email = emailAny as? Email {
@@ -141,10 +143,10 @@ class EmailDb {
             }
         )
     }
-    
+
     /// Generates a subscription to the database using the default schema and resolvers
-    func subscription (
-        query:String,
+    func subscription(
+        query: String,
         variableValues: [String: Map] = [:]
     ) throws -> SubscriptionEventStream {
         return try createSubscription(schema: defaultSchema(), query: query, variableValues: variableValues)
@@ -163,11 +165,11 @@ func emailSchemaWithResolvers(resolve: GraphQLFieldResolve? = nil, subscribe: Gr
                     args: [
                         "priority": GraphQLArgument(
                             type: GraphQLInt
-                        )
+                        ),
                     ],
                     resolve: resolve,
                     subscribe: subscribe
-                )
+                ),
             ]
         )
     )
@@ -186,13 +188,13 @@ func createSubscription(
         instrumentation: NoOpInstrumentation,
         schema: schema,
         request: query,
-        rootValue: Void(),
-        context: Void(),
+        rootValue: (),
+        context: (),
         eventLoopGroup: eventLoopGroup,
         variableValues: variableValues,
         operationName: nil
     ).wait()
-    
+
     if let stream = result.stream {
         return stream
     } else {
