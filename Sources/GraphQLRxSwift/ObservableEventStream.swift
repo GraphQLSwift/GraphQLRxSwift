@@ -1,4 +1,5 @@
 import GraphQL
+import NIO
 import RxSwift
 
 // EventStream wrapper for Observable
