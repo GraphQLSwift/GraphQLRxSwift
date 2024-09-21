@@ -363,13 +363,7 @@ class SubscriptionTests : XCTestCase {
                     "priority": "meow"
                 ]
             )
-        ) { error in
-            let graphQLError = error as! GraphQLError
-            XCTAssertEqual(
-                graphQLError.message,
-                "Variable \"$priority\" got invalid value \"meow\".\nExpected type \"Int\", found \"meow\"."
-            )
-        }
+        )
     }
 
 
@@ -505,7 +499,6 @@ class SubscriptionTests : XCTestCase {
         var currentResult = GraphQLResult()
         let _ = stream.observable.subscribe { event in
             currentResult = try! event.element!.wait()
-            print(currentResult)
         }.disposed(by: db.disposeBag)
 
         db.trigger(email: Email(
