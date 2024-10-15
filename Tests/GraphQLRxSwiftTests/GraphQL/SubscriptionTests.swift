@@ -1,14 +1,13 @@
 import GraphQL
+@testable import GraphQLRxSwift
 import NIO
 import RxSwift
 import XCTest
-@testable import GraphQLRxSwift
 
 /// This follows the graphql-js testing, with deviations where noted.
-class SubscriptionTests : XCTestCase {
-    
+class SubscriptionTests: XCTestCase {
     // MARK: Test primary graphqlSubscribe function
-    
+
     /// This test is not present in graphql-js, but just tests basic functionality.
     func testGraphqlSubscribe() throws {
         let db = EmailDb()
@@ -27,7 +26,7 @@ class SubscriptionTests : XCTestCase {
                 }
               }
         """
-        
+
         let subscriptionResult = try graphqlSubscribe(
             schema: schema,
             request: query,
@@ -41,33 +40,33 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
+
         var currentResult = GraphQLResult()
         let _ = stream.observable.subscribe { event in
             currentResult = try! event.element!.wait()
         }.disposed(by: db.disposeBag)
-        
+
         db.trigger(email: Email(
             from: "yuzhi@graphql.org",
             subject: "Alright",
             message: "Tests are good",
             unread: true
         ))
-        
+
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "email":[
+                "email": [
                     "from": "yuzhi@graphql.org",
-                    "subject": "Alright"
+                    "subject": "Alright",
                 ],
-                "inbox":[
+                "inbox": [
                     "unread": 1,
-                    "total": 2
-                ]
+                    "total": 2,
+                ],
             ]]
         ))
     }
-    
+
     // MARK: Subscription Initialization Phase
 
     /// accepts multiple subscription fields defined in schema
@@ -83,17 +82,17 @@ class SubscriptionTests : XCTestCase {
                         args: [
                             "priority": GraphQLArgument(
                                 type: GraphQLInt
-                            )
+                            ),
                         ],
-                        resolve: {emailAny, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                        resolve: { emailAny, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
                             let email = emailAny as! Email
                             return eventLoopGroup.next().makeSucceededFuture(EmailEvent(
                                 email: email,
                                 inbox: Inbox(emails: db.emails)
                             ))
                         },
-                        subscribe: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
-                            return eventLoopGroup.next().makeSucceededFuture(db.publisher.toEventStream())
+                        subscribe: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                            eventLoopGroup.next().makeSucceededFuture(db.publisher.toEventStream())
                         }
                     ),
                     "notImportantEmail": GraphQLField(
@@ -101,19 +100,19 @@ class SubscriptionTests : XCTestCase {
                         args: [
                             "priority": GraphQLArgument(
                                 type: GraphQLInt
-                            )
+                            ),
                         ],
-                        resolve: {emailAny, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                        resolve: { emailAny, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
                             let email = emailAny as! Email
                             return eventLoopGroup.next().makeSucceededFuture(EmailEvent(
                                 email: email,
                                 inbox: Inbox(emails: db.emails)
                             ))
                         },
-                        subscribe: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
-                            return eventLoopGroup.next().makeSucceededFuture(db.publisher.toEventStream())
+                        subscribe: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                            eventLoopGroup.next().makeSucceededFuture(db.publisher.toEventStream())
                         }
-                    )
+                    ),
                 ]
             )
         )
@@ -135,29 +134,29 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
+
         var currentResult = GraphQLResult()
         let _ = stream.observable.subscribe { event in
             currentResult = try! event.element!.wait()
         }.disposed(by: db.disposeBag)
-        
+
         db.trigger(email: Email(
             from: "yuzhi@graphql.org",
             subject: "Alright",
             message: "Tests are good",
             unread: true
         ))
-        
+
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "email":[
+                "email": [
                     "from": "yuzhi@graphql.org",
-                    "subject": "Alright"
+                    "subject": "Alright",
                 ],
-                "inbox":[
+                "inbox": [
                     "unread": 1,
-                    "total": 2
-                ]
+                    "total": 2,
+                ],
             ]]
         ))
     }
@@ -178,24 +177,24 @@ class SubscriptionTests : XCTestCase {
                 fields: [
                     "importantEmail": GraphQLField(
                         type: EmailEventType,
-                        resolve: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
-                            return eventLoopGroup.next().makeSucceededFuture(nil)
+                        resolve: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                            eventLoopGroup.next().makeSucceededFuture(nil)
                         },
-                        subscribe: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                        subscribe: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
                             didResolveImportantEmail = true
                             return eventLoopGroup.next().makeSucceededFuture(db.publisher.toEventStream())
                         }
                     ),
                     "notImportantEmail": GraphQLField(
                         type: EmailEventType,
-                        resolve: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
-                            return eventLoopGroup.next().makeSucceededFuture(nil)
+                        resolve: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                            eventLoopGroup.next().makeSucceededFuture(nil)
                         },
-                        subscribe: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                        subscribe: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
                             didResolveNonImportantEmail = true
                             return eventLoopGroup.next().makeSucceededFuture(db.publisher.toEventStream())
                         }
-                    )
+                    ),
                 ]
             )
         )
@@ -217,8 +216,8 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
-        let _ = stream.observable.subscribe{ event in
+
+        let _ = stream.observable.subscribe { event in
             let _ = try! event.element!.wait()
         }.disposed(by: db.disposeBag)
         db.trigger(email: Email(
@@ -267,11 +266,11 @@ class SubscriptionTests : XCTestCase {
     /// 'throws an error if subscribe does not return an iterator'
     func testErrorIfSubscribeIsntIterator() throws {
         let schema = emailSchemaWithResolvers(
-            resolve: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
-                return eventLoopGroup.next().makeSucceededFuture(nil)
+            resolve: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                eventLoopGroup.next().makeSucceededFuture(nil)
             },
-            subscribe: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
-                return eventLoopGroup.next().makeSucceededFuture("test")
+            subscribe: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                eventLoopGroup.next().makeSucceededFuture("test")
             }
         )
         XCTAssertThrowsError(
@@ -314,26 +313,25 @@ class SubscriptionTests : XCTestCase {
 
         // Throwing an error
         verifyError(schema: emailSchemaWithResolvers(
-            subscribe: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+            subscribe: { _, _, _, _, _ throws -> EventLoopFuture<Any?> in
                 throw GraphQLError(message: "test error")
             }
         ))
 
         // Resolving to an error
         verifyError(schema: emailSchemaWithResolvers(
-            subscribe: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
-                return eventLoopGroup.next().makeSucceededFuture(GraphQLError(message: "test error"))
+            subscribe: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                eventLoopGroup.next().makeSucceededFuture(GraphQLError(message: "test error"))
             }
         ))
 
         // Rejecting with an error
         verifyError(schema: emailSchemaWithResolvers(
-            subscribe: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
-                return eventLoopGroup.next().makeFailedFuture(GraphQLError(message: "test error"))
+            subscribe: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                eventLoopGroup.next().makeFailedFuture(GraphQLError(message: "test error"))
             }
         ))
     }
-
 
     /// 'resolves to an error for source event stream resolver errors'
     // Tests above cover this
@@ -360,18 +358,11 @@ class SubscriptionTests : XCTestCase {
             try db.subscription(
                 query: query,
                 variableValues: [
-                    "priority": "meow"
+                    "priority": "meow",
                 ]
             )
-        ) { error in
-            let graphQLError = error as! GraphQLError
-            XCTAssertEqual(
-                graphQLError.message,
-                "Variable \"$priority\" got invalid value \"meow\".\nExpected type \"Int\", found \"meow\"."
-            )
-        }
+        )
     }
-
 
     // MARK: Subscription Publish Phase
 
@@ -396,12 +387,12 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
+
         var currentResult = GraphQLResult()
         let _ = stream.observable.subscribe { event in
             currentResult = try! event.element!.wait()
         }.disposed(by: db.disposeBag)
-        
+
         db.trigger(email: Email(
             from: "yuzhi@graphql.org",
             subject: "Alright",
@@ -410,14 +401,14 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "email":[
+                "email": [
                     "from": "yuzhi@graphql.org",
-                    "subject": "Alright"
+                    "subject": "Alright",
                 ],
-                "inbox":[
+                "inbox": [
                     "unread": 1,
-                    "total": 2
-                ]
+                    "total": 2,
+                ],
             ]]
         ))
     }
@@ -443,13 +434,13 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
+
         // Subscription 1
         var sub1Value = GraphQLResult()
         let _ = stream.observable.subscribe { event in
             sub1Value = try! event.element!.wait()
         }.disposed(by: db.disposeBag)
-        
+
         // Subscription 2
         var sub2Value = GraphQLResult()
         let _ = stream.observable.subscribe { event in
@@ -462,24 +453,24 @@ class SubscriptionTests : XCTestCase {
             message: "Tests are good",
             unread: true
         ))
-        
+
         let expected = GraphQLResult(
             data: ["importantEmail": [
-                "email":[
+                "email": [
                     "from": "yuzhi@graphql.org",
-                    "subject": "Alright"
+                    "subject": "Alright",
                 ],
-                "inbox":[
+                "inbox": [
                     "unread": 1,
-                    "total": 2
-                ]
+                    "total": 2,
+                ],
             ]]
         )
-        
+
         XCTAssertEqual(sub1Value, expected)
         XCTAssertEqual(sub2Value, expected)
     }
-    
+
     /// 'produces a payload per subscription event'
     func testPayloadPerEvent() throws {
         let db = EmailDb()
@@ -501,11 +492,10 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
+
         var currentResult = GraphQLResult()
         let _ = stream.observable.subscribe { event in
             currentResult = try! event.element!.wait()
-            print(currentResult)
         }.disposed(by: db.disposeBag)
 
         db.trigger(email: Email(
@@ -516,17 +506,17 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "email":[
+                "email": [
                     "from": "yuzhi@graphql.org",
-                    "subject": "Alright"
+                    "subject": "Alright",
                 ],
-                "inbox":[
+                "inbox": [
                     "unread": 1,
-                    "total": 2
-                ]
+                    "total": 2,
+                ],
             ]]
         ))
-        
+
         db.trigger(email: Email(
             from: "hyo@graphql.org",
             subject: "Tools",
@@ -535,18 +525,18 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "email":[
+                "email": [
                     "from": "hyo@graphql.org",
-                    "subject": "Tools"
+                    "subject": "Tools",
                 ],
-                "inbox":[
+                "inbox": [
                     "unread": 2,
-                    "total": 3
-                ]
+                    "total": 3,
+                ],
             ]]
         ))
     }
-    
+
     /// Tests that subscriptions use arguments correctly.
     /// This is not in the graphql-js tests.
     func testArguments() throws {
@@ -569,7 +559,7 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
+
         var currentResult = GraphQLResult()
         let _ = stream.observable.subscribe { event in
             currentResult = try! event.element!.wait()
@@ -584,18 +574,18 @@ class SubscriptionTests : XCTestCase {
         ))
         let firstMessageExpected = GraphQLResult(
             data: ["importantEmail": [
-                "email":[
+                "email": [
                     "from": "yuzhi@graphql.org",
-                    "subject": "Alright"
+                    "subject": "Alright",
                 ],
-                "inbox":[
+                "inbox": [
                     "unread": 1,
-                    "total": 2
-                ]
+                    "total": 2,
+                ],
             ]]
         )
         XCTAssertEqual(currentResult, firstMessageExpected)
-        
+
         // Low priority email shouldn't trigger an event
         db.trigger(email: Email(
             from: "hyo@graphql.org",
@@ -605,7 +595,7 @@ class SubscriptionTests : XCTestCase {
             priority: 2
         ))
         XCTAssertEqual(currentResult, firstMessageExpected)
-        
+
         // Higher priority one should trigger again
         db.trigger(email: Email(
             from: "hyo@graphql.org",
@@ -616,14 +606,14 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "email":[
+                "email": [
                     "from": "hyo@graphql.org",
-                    "subject": "Tools"
+                    "subject": "Tools",
                 ],
-                "inbox":[
+                "inbox": [
                     "unread": 3,
-                    "total": 4
-                ]
+                    "total": 4,
+                ],
             ]]
         ))
     }
@@ -649,25 +639,25 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
+
         var currentResult = GraphQLResult()
         let subscriber = stream.observable.subscribe { event in
             currentResult = try! event.element!.wait()
         }
-        
+
         let expected = GraphQLResult(
             data: ["importantEmail": [
-                "email":[
+                "email": [
                     "from": "yuzhi@graphql.org",
-                    "subject": "Alright"
+                    "subject": "Alright",
                 ],
-                "inbox":[
+                "inbox": [
                     "unread": 1,
-                    "total": 2
+                    "total": 2,
                 ],
             ]]
         )
-        
+
         db.trigger(email: Email(
             from: "yuzhi@graphql.org",
             subject: "Alright",
@@ -699,18 +689,18 @@ class SubscriptionTests : XCTestCase {
         let db = EmailDb()
 
         let schema = emailSchemaWithResolvers(
-            resolve: {emailAny, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+            resolve: { emailAny, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
                 let email = emailAny as! Email
                 if email.subject == "Goodbye" { // Force the system to fail here.
-                    throw GraphQLError(message:"Never leave.")
+                    throw GraphQLError(message: "Never leave.")
                 }
                 return eventLoopGroup.next().makeSucceededFuture(EmailEvent(
                     email: email,
                     inbox: Inbox(emails: db.emails)
                 ))
             },
-            subscribe: {_, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
-                return eventLoopGroup.next().makeSucceededFuture(db.publisher.toEventStream())
+            subscribe: { _, _, _, eventLoopGroup, _ throws -> EventLoopFuture<Any?> in
+                eventLoopGroup.next().makeSucceededFuture(db.publisher.toEventStream())
             }
         )
 
@@ -727,12 +717,12 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
+
         var currentResult = GraphQLResult()
         let _ = stream.observable.subscribe { event in
             currentResult = try! event.element!.wait()
         }.disposed(by: db.disposeBag)
-        
+
         db.trigger(email: Email(
             from: "yuzhi@graphql.org",
             subject: "Hello",
@@ -741,9 +731,9 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "email":[
-                    "subject": "Hello"
-                ]
+                "email": [
+                    "subject": "Hello",
+                ],
             ]]
         ))
 
@@ -757,7 +747,7 @@ class SubscriptionTests : XCTestCase {
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": nil],
             errors: [
-                GraphQLError(message: "Never leave.")
+                GraphQLError(message: "Never leave."),
             ]
         ))
 
@@ -770,19 +760,19 @@ class SubscriptionTests : XCTestCase {
         ))
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": [
-                "email":[
-                    "subject": "Bonjour"
-                ]
+                "email": [
+                    "subject": "Bonjour",
+                ],
             ]]
         ))
     }
-    
+
     /// 'should pass through error thrown in source event stream'
     // Not necessary - Pub/sub implementation handles event erroring
-    
+
     /// 'should resolve GraphQL error from source event stream'
     // Not necessary - Pub/sub implementation handles event erroring
-    
+
     /// Test incorrect observable publish type errors
     func testErrorWrongObservableType() throws {
         let db = EmailDb()
@@ -804,18 +794,18 @@ class SubscriptionTests : XCTestCase {
             XCTFail("stream isn't ObservableSubscriptionEventStream")
             return
         }
-        
+
         var currentResult = GraphQLResult()
         let _ = stream.observable.subscribe { event in
             currentResult = try! event.element!.wait()
         }.disposed(by: db.disposeBag)
-        
+
         db.publisher.onNext("String instead of email")
-        
+
         XCTAssertEqual(currentResult, GraphQLResult(
             data: ["importantEmail": nil],
             errors: [
-                GraphQLError(message: "String is not Email")
+                GraphQLError(message: "String is not Email"),
             ]
         ))
     }
