@@ -7,8 +7,8 @@ let package = Package(
         .library(name: "GraphQLRxSwift", targets: ["GraphQLRxSwift"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/GraphQLSwift/GraphQL.git", from: "2.0.0"),
-        .package(url: "https://github.com/GraphQLSwift/Graphiti.git", from: "1.0.0"),
+        .package(url: "https://github.com/GraphQLSwift/GraphQL.git", "2.0.0" ..< "4.0.0"),
+        .package(url: "https://github.com/GraphQLSwift/Graphiti.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "6.1.0"),
     ],
     targets: [
