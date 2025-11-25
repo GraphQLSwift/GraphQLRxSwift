@@ -1,5 +1,9 @@
 # GraphQLRxSwift
 
+**ARCHIVED**: GraphQLSwift adopted AsyncSequence in place of its home-grown event stream in [v4.0.0](https://github.com/GraphQLSwift/GraphQL/releases/tag/4.0.0), which makes this package obsolete. RxSwift can still be used alongside the AsyncSequence system using [it's Concurrency extensions](https://github.com/ReactiveX/RxSwift/blob/main/RxSwift/Observable%2BConcurrency.swift).
+
+---
+
 GraphQLRxSwift is a small Swift GraphQL/Graphiti subscription driver that allows usage of [RxSwift](https://github.com/ReactiveX/RxSwift) observables
 as subscription event streams.
 
